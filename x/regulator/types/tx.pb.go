@@ -294,9 +294,9 @@ var fileDescriptor_31269ecc11592bc3 = []byte{
 	0x47, 0xb2, 0xb5, 0xc2, 0x1c, 0xe6, 0xe4, 0x7f, 0xe2, 0x91, 0x1c, 0xe3, 0x85, 0x47, 0x72, 0x8c,
 	0x0f, 0x1e, 0xc9, 0x31, 0x4e, 0x78, 0x2c, 0xc7, 0x70, 0xe1, 0xb1, 0x1c, 0xc3, 0x8d, 0xc7, 0x72,
 	0x0c, 0x51, 0xa6, 0xe9, 0x99, 0x25, 0x19, 0xa5, 0x49, 0x7a, 0xc9, 0xf9, 0xb9, 0xfa, 0x70, 0x6b,
-	0xf4, 0x21, 0xd6, 0xe8, 0x82, 0xec, 0xd1, 0x2f, 0x33, 0xd2, 0xaf, 0xd0, 0x47, 0x2a, 0xfe, 0x2a,
-	0x0b, 0x52, 0x8b, 0x93, 0xd8, 0xc0, 0x25, 0x93, 0x31, 0x20, 0x00, 0x00, 0xff, 0xff, 0x18, 0x81,
-	0xca, 0xc0, 0x18, 0x05, 0x00, 0x00,
+	0xf4, 0x21, 0xd6, 0xe8, 0x82, 0xec, 0xd1, 0x2f, 0x33, 0xd6, 0xaf, 0xd0, 0x47, 0x2a, 0xfe, 0x2a,
+	0x0b, 0x52, 0x8b, 0x93, 0xd8, 0xc0, 0x25, 0x93, 0x31, 0x20, 0x00, 0x00, 0xff, 0xff, 0x59, 0x9a,
+	0x46, 0xae, 0x18, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -852,7 +852,10 @@ func (m *MsgIssueRegulatorCredential) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
+			if skippy < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthTx
 			}
 			if (iNdEx + skippy) > l {
@@ -902,7 +905,10 @@ func (m *MsgIssueRegulatorCredentialResponse) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
+			if skippy < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthTx
 			}
 			if (iNdEx + skippy) > l {
@@ -1020,7 +1026,10 @@ func (m *MsgIssueRegistrationCredential) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
+			if skippy < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthTx
 			}
 			if (iNdEx + skippy) > l {
@@ -1070,7 +1079,10 @@ func (m *MsgIssueRegistrationCredentialResponse) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
+			if skippy < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthTx
 			}
 			if (iNdEx + skippy) > l {
@@ -1188,7 +1200,10 @@ func (m *MsgIssueLicenseCredential) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
+			if skippy < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthTx
 			}
 			if (iNdEx + skippy) > l {
@@ -1238,7 +1253,10 @@ func (m *MsgIssueLicenseCredentialResponse) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
+			if skippy < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthTx
 			}
 			if (iNdEx + skippy) > l {

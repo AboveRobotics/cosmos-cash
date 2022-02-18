@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"encoding/base64"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc/codes"
@@ -40,6 +41,24 @@ func (k Keeper) DidDocument(
 		return nil, status.Error(codes.NotFound, err.Error())
 	}
 	return &types.QueryDidDocumentResponse{
+		DidDocument: doc,
+		DidMetadata: meta,
+	}, nil
+}
+
+// DidDocumentB64 implements the DidDocumentB64 gRPC method
+func (k Keeper) DidDocumentB64(c context.Context, req *types.QueryDidDocumentB64Request) (*types.QueryDidDocumentB64Response, error) {
+	did_bytes, err := base64.URLEncoding.DecodeString(req.IdBase64)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "DID must be url-compatible Base64 encoded")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	doc, meta, err := k.ResolveDid(ctx, types.DID(did_bytes))
+	if err != nil {
+		return nil, status.Error(codes.NotFound, err.Error())
+	}
+	return &types.QueryDidDocumentB64Response{
 		DidDocument: doc,
 		DidMetadata: meta,
 	}, nil

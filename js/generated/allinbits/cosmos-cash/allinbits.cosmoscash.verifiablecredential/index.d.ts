@@ -1,0 +1,15 @@
+import { QueryValidateVerifiableCredentialResponse } from "./module/types/verifiable-credential/query";
+import { MsgIssueCredentialResponse } from "./module/types/verifiable-credential/tx";
+import { VerifiableCredential } from "./module/types/verifiable-credential/verifiable-credential";
+import { UserCredentialSubject } from "./module/types/verifiable-credential/verifiable-credential";
+import { LicenseCredentialSubject } from "./module/types/verifiable-credential/verifiable-credential";
+import { RegulatorCredentialSubject } from "./module/types/verifiable-credential/verifiable-credential";
+import { RegistrationCredentialSubject } from "./module/types/verifiable-credential/verifiable-credential";
+import { LegalPerson } from "./module/types/verifiable-credential/verifiable-credential";
+import { Name } from "./module/types/verifiable-credential/verifiable-credential";
+import { Address } from "./module/types/verifiable-credential/verifiable-credential";
+import { Id } from "./module/types/verifiable-credential/verifiable-credential";
+import { Proof } from "./module/types/verifiable-credential/verifiable-credential";
+export { QueryValidateVerifiableCredentialResponse, MsgIssueCredentialResponse, VerifiableCredential, UserCredentialSubject, LicenseCredentialSubject, RegulatorCredentialSubject, RegistrationCredentialSubject, LegalPerson, Name, Address, Id, Proof };
+declare const _default;
+export default _default;

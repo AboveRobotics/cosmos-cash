@@ -1,0 +1,10 @@
+import { DidDocument } from "./module/types/did/did";
+import { VerificationMethod } from "./module/types/did/did";
+import { Service } from "./module/types/did/did";
+import { DidMetadata } from "./module/types/did/did";
+import { DidDocumentCreatedEvent } from "./module/types/did/event";
+import { DidDocumentUpdatedEvent } from "./module/types/did/event";
+import { Verification } from "./module/types/did/tx";
+export { DidDocument, VerificationMethod, Service, DidMetadata, DidDocumentCreatedEvent, DidDocumentUpdatedEvent, Verification };
+declare const _default;
+export default _default;
