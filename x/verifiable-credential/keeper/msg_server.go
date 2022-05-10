@@ -41,3 +41,20 @@ func (k msgServer) RevokeCredential(goCtx context.Context, msg *types.MsgRevokeC
 
 	return &types.MsgRevokeCredentialResponse{}, nil
 }
+
+func (k msgServer) IssueCredential(goCtx context.Context, msg *types.MsgIssueCredential) (*types.MsgIssueCredentialResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	k.Logger(ctx).Info("issue credential request", "credential", msg.Credential.Id, "address", msg.Owner)
+
+	if k.HasVerifiableCredential(ctx, []byte(msg.Credential.Id)) {
+		return nil, types.ErrVerifiableCredentialIdExists
+	}
+
+	err := k.SetVerifiableCredential(ctx, []byte(msg.Credential.Id), *msg.Credential)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.MsgIssueCredentialResponse{}, nil
+}

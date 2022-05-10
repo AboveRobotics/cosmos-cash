@@ -295,6 +295,10 @@ export interface Msg {
   RevokeCredential(
     request: MsgRevokeCredential
   ): Promise<MsgRevokeCredentialResponse>;
+  /** Issue a new Verifiable Credential */
+  IssueCredential(
+    request: MsgIssueCredential
+  ): Promise<MsgIssueCredentialResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -313,6 +317,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgRevokeCredentialResponse.decode(new Reader(data))
+    );
+  }
+
+  IssueCredential(
+    request: MsgIssueCredential
+  ): Promise<MsgIssueCredentialResponse> {
+    const data = MsgIssueCredential.encode(request).finish();
+    const promise = this.rpc.request(
+      "allinbits.cosmoscash.verifiablecredential.Msg",
+      "IssueCredential",
+      data
+    );
+    return promise.then((data) =>
+      MsgIssueCredentialResponse.decode(new Reader(data))
     );
   }
 }

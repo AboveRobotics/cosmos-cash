@@ -13,4 +13,6 @@ var (
 	ErrDidDocumentDoesNotExist      = sdkerrors.Register(ModuleName, 1102, "did does not exist in the store")
 	ErrVerifiableCredentialIssuer   = sdkerrors.Register(ModuleName, 1103, "provided verifiable credential and did public key do not match")
 	ErrMessageSigner                = sdkerrors.Register(ModuleName, 1104, "message signer does not match provided did")
+
+	ErrVerifiableCredentialIdExists = sdkerrors.Register(ModuleName, 1105, "vc with given ID already exists")
 )

@@ -4,13 +4,13 @@ import { StdFee } from "@cosmjs/launchpad";
 import { SigningStargateClient } from "@cosmjs/stargate";
 import { Registry, OfflineSigner, EncodeObject, DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
-import { MsgIssueCredential } from "./types/verifiable-credential/tx";
 import { MsgRevokeCredential } from "./types/verifiable-credential/tx";
+import { MsgIssueCredential } from "./types/verifiable-credential/tx";
 
 
 const types = [
-  ["/allinbits.cosmoscash.verifiablecredential.MsgIssueCredential", MsgIssueCredential],
   ["/allinbits.cosmoscash.verifiablecredential.MsgRevokeCredential", MsgRevokeCredential],
+  ["/allinbits.cosmoscash.verifiablecredential.MsgIssueCredential", MsgIssueCredential],
   
 ];
 export const MissingWalletError = new Error("wallet is required");
@@ -43,8 +43,8 @@ const txClient = async (wallet: OfflineSigner, { addr: addr }: TxClientOptions =
 
   return {
     signAndBroadcast: (msgs: EncodeObject[], { fee, memo }: SignAndBroadcastOptions = {fee: defaultFee, memo: ""}) => client.signAndBroadcast(address, msgs, fee,memo),
-    msgIssueCredential: (data: MsgIssueCredential): EncodeObject => ({ typeUrl: "/allinbits.cosmoscash.verifiablecredential.MsgIssueCredential", value: MsgIssueCredential.fromPartial( data ) }),
     msgRevokeCredential: (data: MsgRevokeCredential): EncodeObject => ({ typeUrl: "/allinbits.cosmoscash.verifiablecredential.MsgRevokeCredential", value: MsgRevokeCredential.fromPartial( data ) }),
+    msgIssueCredential: (data: MsgIssueCredential): EncodeObject => ({ typeUrl: "/allinbits.cosmoscash.verifiablecredential.MsgIssueCredential", value: MsgIssueCredential.fromPartial( data ) }),
     
   };
 };

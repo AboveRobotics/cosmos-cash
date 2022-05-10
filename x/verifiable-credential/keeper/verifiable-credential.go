@@ -8,6 +8,10 @@ import (
 	"github.com/allinbits/cosmos-cash/v3/x/verifiable-credential/types"
 )
 
+func (k Keeper) HasVerifiableCredential(ctx sdk.Context, key []byte) bool {
+	return ctx.KVStore(k.storeKey).Has(append(types.VerifiableCredentialKey, key...))
+}
+
 // SetVerifiableCredential commit a verifiable credential to the storage
 func (q Keeper) SetVerifiableCredential(ctx sdk.Context, key []byte, vc types.VerifiableCredential) (err error) {
 	if err = ValidateProof(ctx, q, vc, didtypes.Authentication, didtypes.AssertionMethod); err != nil {
@@ -137,6 +141,9 @@ func (q Keeper) GetAllVerifiableCredentials(ctx sdk.Context) []types.VerifiableC
 func ValidateProof(ctx sdk.Context, k Keeper, vc types.VerifiableCredential, verificationRelationships ...string) error {
 	// resolve the subject
 	_, _, err := k.didKeeper.ResolveDid(ctx, vc.GetSubjectDID())
+
+	// ctx.Logger().Debug(vc.GetSubjectDID().String())
+
 	if err != nil {
 		return sdkerrors.Wrapf(
 			err, "subject DID is not resolvable",

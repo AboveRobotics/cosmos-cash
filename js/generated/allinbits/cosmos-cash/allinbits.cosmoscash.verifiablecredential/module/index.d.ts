@@ -1,8 +1,8 @@
 import { StdFee } from "@cosmjs/launchpad";
 import { Registry, OfflineSigner, EncodeObject } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
-import { MsgIssueCredential } from "./types/verifiable-credential/tx";
 import { MsgRevokeCredential } from "./types/verifiable-credential/tx";
+import { MsgIssueCredential } from "./types/verifiable-credential/tx";
 export declare const MissingWalletError: Error;
 export declare const registry: Registry;
 interface TxClientOptions {
@@ -14,8 +14,8 @@ interface SignAndBroadcastOptions {
 }
 declare const txClient: (wallet: OfflineSigner, { addr: addr }?: TxClientOptions) => Promise<{
     signAndBroadcast: (msgs: EncodeObject[], { fee, memo }?: SignAndBroadcastOptions) => any;
-    msgIssueCredential: (data: MsgIssueCredential) => EncodeObject;
     msgRevokeCredential: (data: MsgRevokeCredential) => EncodeObject;
+    msgIssueCredential: (data: MsgIssueCredential) => EncodeObject;
 }>;
 interface QueryClientOptions {
     addr: string;

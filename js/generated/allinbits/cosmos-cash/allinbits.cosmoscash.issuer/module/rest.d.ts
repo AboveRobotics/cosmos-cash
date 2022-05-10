@@ -99,6 +99,12 @@ export interface VerifiablecredentialAddress {
     locality?: string;
     country?: string;
 }
+export interface VerifiablecredentialArbitraryCredentialSubject {
+    id?: string;
+    type?: string;
+    /** @format byte */
+    attributes?: string;
+}
 export interface VerifiablecredentialId {
     id?: string;
     type?: string;
@@ -223,6 +229,7 @@ export interface VerifiablecredentialVerifiableCredential {
      * selective disclosure.
      */
     userCred?: VerifiablecredentialUserCredentialSubject;
+    arbitraryCred?: VerifiablecredentialArbitraryCredentialSubject;
     /**
      * One or more cryptographic proofs that can be used to detect tampering
      * and verify the authorship of a credential or presentation. The specific

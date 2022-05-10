@@ -5,14 +5,14 @@ import { SigningStargateClient } from "@cosmjs/stargate";
 import { Registry, OfflineSigner, EncodeObject, DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
 import { MsgIssueLicenseCredential } from "./types/regulator/tx";
-import { MsgIssueRegistrationCredential } from "./types/regulator/tx";
 import { MsgIssueRegulatorCredential } from "./types/regulator/tx";
+import { MsgIssueRegistrationCredential } from "./types/regulator/tx";
 
 
 const types = [
   ["/allinbits.cosmoscash.regulator.MsgIssueLicenseCredential", MsgIssueLicenseCredential],
-  ["/allinbits.cosmoscash.regulator.MsgIssueRegistrationCredential", MsgIssueRegistrationCredential],
   ["/allinbits.cosmoscash.regulator.MsgIssueRegulatorCredential", MsgIssueRegulatorCredential],
+  ["/allinbits.cosmoscash.regulator.MsgIssueRegistrationCredential", MsgIssueRegistrationCredential],
   
 ];
 export const MissingWalletError = new Error("wallet is required");
@@ -46,8 +46,8 @@ const txClient = async (wallet: OfflineSigner, { addr: addr }: TxClientOptions =
   return {
     signAndBroadcast: (msgs: EncodeObject[], { fee, memo }: SignAndBroadcastOptions = {fee: defaultFee, memo: ""}) => client.signAndBroadcast(address, msgs, fee,memo),
     msgIssueLicenseCredential: (data: MsgIssueLicenseCredential): EncodeObject => ({ typeUrl: "/allinbits.cosmoscash.regulator.MsgIssueLicenseCredential", value: MsgIssueLicenseCredential.fromPartial( data ) }),
-    msgIssueRegistrationCredential: (data: MsgIssueRegistrationCredential): EncodeObject => ({ typeUrl: "/allinbits.cosmoscash.regulator.MsgIssueRegistrationCredential", value: MsgIssueRegistrationCredential.fromPartial( data ) }),
     msgIssueRegulatorCredential: (data: MsgIssueRegulatorCredential): EncodeObject => ({ typeUrl: "/allinbits.cosmoscash.regulator.MsgIssueRegulatorCredential", value: MsgIssueRegulatorCredential.fromPartial( data ) }),
+    msgIssueRegistrationCredential: (data: MsgIssueRegistrationCredential): EncodeObject => ({ typeUrl: "/allinbits.cosmoscash.regulator.MsgIssueRegistrationCredential", value: MsgIssueRegistrationCredential.fromPartial( data ) }),
     
   };
 };

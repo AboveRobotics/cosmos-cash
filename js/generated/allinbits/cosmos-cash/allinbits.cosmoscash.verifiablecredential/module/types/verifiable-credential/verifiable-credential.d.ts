@@ -56,6 +56,8 @@ export interface VerifiableCredential {
      * selective disclosure.
      */
     userCred: UserCredentialSubject | undefined;
+    /** all other use cases; ID && arbitrary byte array pair */
+    arbitraryCred: ArbitraryCredentialSubject | undefined;
     /**
      * One or more cryptographic proofs that can be used to detect tampering
      * and verify the authorship of a credential or presentation. The specific
@@ -138,6 +140,15 @@ export interface Id {
     id: string;
     type: string;
 }
+/** allow packing of arbitrary data into the attributes of a credential subject */
+export interface ArbitraryCredentialSubject {
+    /** The value of id represents the ID of the credential_subject */
+    id: string;
+    /** indicator of what to expect in the following attributes field */
+    type: string;
+    /** serialized JSON object */
+    attributes: Uint8Array;
+}
 /**
  * The Proof message represents a cryptographic proof that the
  * credential has not been tampered with or changed without the issuersi
@@ -212,6 +223,13 @@ export declare const Id: {
     fromJSON(object: any): Id;
     toJSON(message: Id): unknown;
     fromPartial(object: DeepPartial<Id>): Id;
+};
+export declare const ArbitraryCredentialSubject: {
+    encode(message: ArbitraryCredentialSubject, writer?: Writer): Writer;
+    decode(input: Reader | Uint8Array, length?: number): ArbitraryCredentialSubject;
+    fromJSON(object: any): ArbitraryCredentialSubject;
+    toJSON(message: ArbitraryCredentialSubject): unknown;
+    fromPartial(object: DeepPartial<ArbitraryCredentialSubject>): ArbitraryCredentialSubject;
 };
 export declare const Proof: {
     encode(message: Proof, writer?: Writer): Writer;

@@ -60,6 +60,8 @@ export interface VerifiableCredential {
    * selective disclosure.
    */
   userCred: UserCredentialSubject | undefined;
+  /** all other use cases; ID && arbitrary byte array pair */
+  arbitraryCred: ArbitraryCredentialSubject | undefined;
   /**
    * One or more cryptographic proofs that can be used to detect tampering
    * and verify the authorship of a credential or presentation. The specific
@@ -151,6 +153,16 @@ export interface Id {
   type: string;
 }
 
+/** allow packing of arbitrary data into the attributes of a credential subject */
+export interface ArbitraryCredentialSubject {
+  /** The value of id represents the ID of the credential_subject */
+  id: string;
+  /** indicator of what to expect in the following attributes field */
+  type: string;
+  /** serialized JSON object */
+  attributes: Uint8Array;
+}
+
 /**
  * The Proof message represents a cryptographic proof that the
  * credential has not been tampered with or changed without the issuersi
@@ -218,6 +230,12 @@ export const VerifiableCredential = {
         writer.uint32(74).fork()
       ).ldelim();
     }
+    if (message.arbitraryCred !== undefined) {
+      ArbitraryCredentialSubject.encode(
+        message.arbitraryCred,
+        writer.uint32(90).fork()
+      ).ldelim();
+    }
     if (message.proof !== undefined) {
       Proof.encode(message.proof, writer.uint32(82).fork()).ldelim();
     }
@@ -270,6 +288,12 @@ export const VerifiableCredential = {
           break;
         case 9:
           message.userCred = UserCredentialSubject.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 11:
+          message.arbitraryCred = ArbitraryCredentialSubject.decode(
             reader,
             reader.uint32()
           );
@@ -343,6 +367,13 @@ export const VerifiableCredential = {
     } else {
       message.userCred = undefined;
     }
+    if (object.arbitraryCred !== undefined && object.arbitraryCred !== null) {
+      message.arbitraryCred = ArbitraryCredentialSubject.fromJSON(
+        object.arbitraryCred
+      );
+    } else {
+      message.arbitraryCred = undefined;
+    }
     if (object.proof !== undefined && object.proof !== null) {
       message.proof = Proof.fromJSON(object.proof);
     } else {
@@ -385,6 +416,10 @@ export const VerifiableCredential = {
     message.userCred !== undefined &&
       (obj.userCred = message.userCred
         ? UserCredentialSubject.toJSON(message.userCred)
+        : undefined);
+    message.arbitraryCred !== undefined &&
+      (obj.arbitraryCred = message.arbitraryCred
+        ? ArbitraryCredentialSubject.toJSON(message.arbitraryCred)
         : undefined);
     message.proof !== undefined &&
       (obj.proof = message.proof ? Proof.toJSON(message.proof) : undefined);
@@ -448,6 +483,13 @@ export const VerifiableCredential = {
       message.userCred = UserCredentialSubject.fromPartial(object.userCred);
     } else {
       message.userCred = undefined;
+    }
+    if (object.arbitraryCred !== undefined && object.arbitraryCred !== null) {
+      message.arbitraryCred = ArbitraryCredentialSubject.fromPartial(
+        object.arbitraryCred
+      );
+    } else {
+      message.arbitraryCred = undefined;
     }
     if (object.proof !== undefined && object.proof !== null) {
       message.proof = Proof.fromPartial(object.proof);
@@ -1326,6 +1368,110 @@ export const Id = {
   },
 };
 
+const baseArbitraryCredentialSubject: object = { id: "", type: "" };
+
+export const ArbitraryCredentialSubject = {
+  encode(
+    message: ArbitraryCredentialSubject,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.type !== "") {
+      writer.uint32(18).string(message.type);
+    }
+    if (message.attributes.length !== 0) {
+      writer.uint32(26).bytes(message.attributes);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): ArbitraryCredentialSubject {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseArbitraryCredentialSubject,
+    } as ArbitraryCredentialSubject;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.type = reader.string();
+          break;
+        case 3:
+          message.attributes = reader.bytes();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ArbitraryCredentialSubject {
+    const message = {
+      ...baseArbitraryCredentialSubject,
+    } as ArbitraryCredentialSubject;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = String(object.type);
+    } else {
+      message.type = "";
+    }
+    if (object.attributes !== undefined && object.attributes !== null) {
+      message.attributes = bytesFromBase64(object.attributes);
+    }
+    return message;
+  },
+
+  toJSON(message: ArbitraryCredentialSubject): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.type !== undefined && (obj.type = message.type);
+    message.attributes !== undefined &&
+      (obj.attributes = base64FromBytes(
+        message.attributes !== undefined ? message.attributes : new Uint8Array()
+      ));
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<ArbitraryCredentialSubject>
+  ): ArbitraryCredentialSubject {
+    const message = {
+      ...baseArbitraryCredentialSubject,
+    } as ArbitraryCredentialSubject;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = object.type;
+    } else {
+      message.type = "";
+    }
+    if (object.attributes !== undefined && object.attributes !== null) {
+      message.attributes = object.attributes;
+    } else {
+      message.attributes = new Uint8Array();
+    }
+    return message;
+  },
+};
+
 const baseProof: object = {
   type: "",
   created: "",
@@ -1462,6 +1608,39 @@ export const Proof = {
     return message;
   },
 };
+
+declare var self: any | undefined;
+declare var window: any | undefined;
+var globalThis: any = (() => {
+  if (typeof globalThis !== "undefined") return globalThis;
+  if (typeof self !== "undefined") return self;
+  if (typeof window !== "undefined") return window;
+  if (typeof global !== "undefined") return global;
+  throw "Unable to locate global object";
+})();
+
+const atob: (b64: string) => string =
+  globalThis.atob ||
+  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
+function bytesFromBase64(b64: string): Uint8Array {
+  const bin = atob(b64);
+  const arr = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; ++i) {
+    arr[i] = bin.charCodeAt(i);
+  }
+  return arr;
+}
+
+const btoa: (bin: string) => string =
+  globalThis.btoa ||
+  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
+function base64FromBytes(arr: Uint8Array): string {
+  const bin: string[] = [];
+  for (let i = 0; i < arr.byteLength; ++i) {
+    bin.push(String.fromCharCode(arr[i]));
+  }
+  return btoa(bin.join(""));
+}
 
 type Builtin = Date | Function | Uint8Array | string | number | undefined;
 export type DeepPartial<T> = T extends Builtin

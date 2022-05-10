@@ -52,11 +52,14 @@ export declare const MsgIssueCredentialResponse: {
 export interface Msg {
     /** RevokeCredential a credential */
     RevokeCredential(request: MsgRevokeCredential): Promise<MsgRevokeCredentialResponse>;
+    /** Issue a new Verifiable Credential */
+    IssueCredential(request: MsgIssueCredential): Promise<MsgIssueCredentialResponse>;
 }
 export declare class MsgClientImpl implements Msg {
     private readonly rpc;
     constructor(rpc: Rpc);
     RevokeCredential(request: MsgRevokeCredential): Promise<MsgRevokeCredentialResponse>;
+    IssueCredential(request: MsgIssueCredential): Promise<MsgIssueCredentialResponse>;
 }
 interface Rpc {
     request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;

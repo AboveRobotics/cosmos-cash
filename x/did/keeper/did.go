@@ -1,11 +1,14 @@
 package keeper
 
 import (
+	"encoding/json"
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"github.com/allinbits/cosmos-cash/v3/x/did/types"
 )
@@ -43,18 +46,82 @@ func (k Keeper) UnmarshalDidMetadata(value []byte) (interface{}, bool) {
 }
 
 // ResolveDid returning the did document and associated metadata
-func (k Keeper) ResolveDid(ctx sdk.Context, did types.DID) (doc types.DidDocument, meta types.DidMetadata, err error) {
+func (k Keeper) ResolveDid(ctx sdk.Context, did types.DID) (types.DidDocument, types.DidMetadata, error) {
 	if strings.HasPrefix(did.String(), types.DidKeyPrefix) {
-		doc, meta, err = types.ResolveAccountDID(did.String(), ctx.ChainID())
-		return
+		doc, meta, err := types.ResolveAccountDID(did.String(), ctx.ChainID())
+		return doc, meta, err
 	}
-	doc, found := k.GetDidDocument(ctx, []byte(did.String()))
-	if !found {
-		err = types.ErrDidDocumentNotFound
-		return
+
+	did_str := string(did)
+
+	did_tokens := strings.Split(did_str, ":")
+	if len(did_tokens) < 3 {
+		err := status.Error(codes.InvalidArgument, "DID must conform to W3C DID standards (https://www.w3.org/TR/did-core/#did-syntax)")
+		return types.DidDocument{}, types.DidMetadata{}, err
 	}
-	meta, _ = k.GetDidMetadata(ctx, []byte(did.String()))
-	return
+	method := did_tokens[1]
+
+	switch method {
+	case "cosmos":
+		doc, found := k.GetDidDocument(ctx, []byte(did.String()))
+		if !found {
+			return types.DidDocument{}, types.DidMetadata{}, types.ErrDidDocumentNotFound
+		}
+		meta, _ := k.GetDidMetadata(ctx, []byte(did.String()))
+		return doc, meta, nil
+	case "nft":
+		id_tokens := strings.Split(did_tokens[2], "_")
+		if len(id_tokens) < 2 {
+			err := status.Error(codes.InvalidArgument, "DIDs with 'nft' method must be in format '{contract_address}_{token_id}'")
+			return types.DidDocument{}, types.DidMetadata{}, err
+		}
+
+		c_addr, err := sdk.AccAddressFromBech32(id_tokens[0])
+		if err != nil {
+			err = status.Error(codes.InvalidArgument, err.Error())
+			return types.DidDocument{}, types.DidMetadata{}, err
+		}
+
+		req, err := json.Marshal(OwnerOfQueryRequest{
+			OwnerOf: OwnerOf{
+				TokenId: id_tokens[1],
+			},
+		})
+		if err != nil {
+			return types.DidDocument{}, types.DidMetadata{}, status.Error(codes.Internal, "Failed JSON request: "+err.Error())
+		}
+
+		res_bytes, err := k.wasmKeeper.QuerySmart(ctx, c_addr, req)
+		if err != nil {
+			return types.DidDocument{}, types.DidMetadata{}, status.Error(codes.Internal, "Failed contract query: "+err.Error())
+		}
+
+		var res OwnerOfQueryResponse
+		err = json.Unmarshal(res_bytes, &res)
+		if err != nil {
+			return types.DidDocument{}, types.DidMetadata{}, status.Error(codes.Internal, "Failed to unmarshal contract response: "+err.Error())
+		}
+
+		doc := types.DidDocument{
+			Id:         did_str,
+			Context:    []string{"https://www.w3.org/ns/did/v1"},
+			Controller: []string{"did:cosmos:" + res.Owner},
+			VerificationMethod: []*types.VerificationMethod{
+				{
+					Id:         did_str + "#owner",
+					Type:       "BlockchainVerificationMethod2021",
+					Controller: did_str,
+					VerificationMaterial: &types.VerificationMethod_BlockchainAccountID{
+						BlockchainAccountID: res.Owner,
+					},
+				},
+			},
+		}
+
+		return doc, types.DidMetadata{}, nil
+	default:
+		return types.DidDocument{}, types.DidMetadata{}, status.Error(codes.InvalidArgument, "DID method must be one of 'cosmos' or 'nft'")
+	}
 }
 
 func (k Keeper) Marshal(value interface{}) (bytes []byte) {

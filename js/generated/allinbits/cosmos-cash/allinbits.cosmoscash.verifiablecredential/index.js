@@ -2,7 +2,6 @@ import { txClient, queryClient, MissingWalletError, registry } from './module';
 // @ts-ignore
 import { SpVuexError } from '@starport/vuex';
 import { QueryValidateVerifiableCredentialResponse } from "./module/types/verifiable-credential/query";
-import { MsgIssueCredentialResponse } from "./module/types/verifiable-credential/tx";
 import { VerifiableCredential } from "./module/types/verifiable-credential/verifiable-credential";
 import { UserCredentialSubject } from "./module/types/verifiable-credential/verifiable-credential";
 import { LicenseCredentialSubject } from "./module/types/verifiable-credential/verifiable-credential";
@@ -12,8 +11,9 @@ import { LegalPerson } from "./module/types/verifiable-credential/verifiable-cre
 import { Name } from "./module/types/verifiable-credential/verifiable-credential";
 import { Address } from "./module/types/verifiable-credential/verifiable-credential";
 import { Id } from "./module/types/verifiable-credential/verifiable-credential";
+import { ArbitraryCredentialSubject } from "./module/types/verifiable-credential/verifiable-credential";
 import { Proof } from "./module/types/verifiable-credential/verifiable-credential";
-export { QueryValidateVerifiableCredentialResponse, MsgIssueCredentialResponse, VerifiableCredential, UserCredentialSubject, LicenseCredentialSubject, RegulatorCredentialSubject, RegistrationCredentialSubject, LegalPerson, Name, Address, Id, Proof };
+export { QueryValidateVerifiableCredentialResponse, VerifiableCredential, UserCredentialSubject, LicenseCredentialSubject, RegulatorCredentialSubject, RegistrationCredentialSubject, LegalPerson, Name, Address, Id, ArbitraryCredentialSubject, Proof };
 async function initTxClient(vuexGetters) {
     return await txClient(vuexGetters['common/wallet/signer'], {
         addr: vuexGetters['common/env/apiTendermint']
@@ -51,7 +51,6 @@ const getDefaultState = () => {
         VerifiableCredential: {},
         _Structure: {
             QueryValidateVerifiableCredentialResponse: getStructure(QueryValidateVerifiableCredentialResponse.fromPartial({})),
-            MsgIssueCredentialResponse: getStructure(MsgIssueCredentialResponse.fromPartial({})),
             VerifiableCredential: getStructure(VerifiableCredential.fromPartial({})),
             UserCredentialSubject: getStructure(UserCredentialSubject.fromPartial({})),
             LicenseCredentialSubject: getStructure(LicenseCredentialSubject.fromPartial({})),
@@ -61,6 +60,7 @@ const getDefaultState = () => {
             Name: getStructure(Name.fromPartial({})),
             Address: getStructure(Address.fromPartial({})),
             Id: getStructure(Id.fromPartial({})),
+            ArbitraryCredentialSubject: getStructure(ArbitraryCredentialSubject.fromPartial({})),
             Proof: getStructure(Proof.fromPartial({})),
         },
         _Registry: registry,
@@ -164,23 +164,6 @@ export default {
                 throw new SpVuexError('QueryClient:QueryVerifiableCredential', 'API Node Unavailable. Could not perform query: ' + e.message);
             }
         },
-        async sendMsgIssueCredential({ rootGetters }, { value, fee = [], memo = '' }) {
-            try {
-                const txClient = await initTxClient(rootGetters);
-                const msg = await txClient.msgIssueCredential(value);
-                const result = await txClient.signAndBroadcast([msg], { fee: { amount: fee,
-                        gas: "200000" }, memo });
-                return result;
-            }
-            catch (e) {
-                if (e == MissingWalletError) {
-                    throw new SpVuexError('TxClient:MsgIssueCredential:Init', 'Could not initialize signing client. Wallet is required.');
-                }
-                else {
-                    throw new SpVuexError('TxClient:MsgIssueCredential:Send', 'Could not broadcast Tx: ' + e.message);
-                }
-            }
-        },
         async sendMsgRevokeCredential({ rootGetters }, { value, fee = [], memo = '' }) {
             try {
                 const txClient = await initTxClient(rootGetters);
@@ -198,18 +181,20 @@ export default {
                 }
             }
         },
-        async MsgIssueCredential({ rootGetters }, { value }) {
+        async sendMsgIssueCredential({ rootGetters }, { value, fee = [], memo = '' }) {
             try {
                 const txClient = await initTxClient(rootGetters);
                 const msg = await txClient.msgIssueCredential(value);
-                return msg;
+                const result = await txClient.signAndBroadcast([msg], { fee: { amount: fee,
+                        gas: "200000" }, memo });
+                return result;
             }
             catch (e) {
                 if (e == MissingWalletError) {
                     throw new SpVuexError('TxClient:MsgIssueCredential:Init', 'Could not initialize signing client. Wallet is required.');
                 }
                 else {
-                    throw new SpVuexError('TxClient:MsgIssueCredential:Create', 'Could not create message: ' + e.message);
+                    throw new SpVuexError('TxClient:MsgIssueCredential:Send', 'Could not broadcast Tx: ' + e.message);
                 }
             }
         },
@@ -225,6 +210,21 @@ export default {
                 }
                 else {
                     throw new SpVuexError('TxClient:MsgRevokeCredential:Create', 'Could not create message: ' + e.message);
+                }
+            }
+        },
+        async MsgIssueCredential({ rootGetters }, { value }) {
+            try {
+                const txClient = await initTxClient(rootGetters);
+                const msg = await txClient.msgIssueCredential(value);
+                return msg;
+            }
+            catch (e) {
+                if (e == MissingWalletError) {
+                    throw new SpVuexError('TxClient:MsgIssueCredential:Init', 'Could not initialize signing client. Wallet is required.');
+                }
+                else {
+                    throw new SpVuexError('TxClient:MsgIssueCredential:Create', 'Could not create message: ' + e.message);
                 }
             }
         },

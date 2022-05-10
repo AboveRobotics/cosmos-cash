@@ -13,6 +13,9 @@ import "verifiable-credential/verifiable-credential.proto";
 service Msg {
   // RevokeCredential a credential
   rpc RevokeCredential(MsgRevokeCredential) returns (MsgRevokeCredentialResponse);
+
+  // Issue a new Verifiable Credential
+  rpc IssueCredential(MsgIssueCredential) returns (MsgIssueCredentialResponse);
 }
 
 
@@ -38,5 +41,3 @@ message MsgIssueCredential {
 
 // MsgIssueCredentialResponse reply for the issue credential call
 message MsgIssueCredentialResponse {}
-
-

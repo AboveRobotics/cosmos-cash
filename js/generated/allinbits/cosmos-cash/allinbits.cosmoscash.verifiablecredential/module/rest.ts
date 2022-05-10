@@ -103,6 +103,14 @@ export interface VerifiablecredentialAddress {
   country?: string;
 }
 
+export interface VerifiablecredentialArbitraryCredentialSubject {
+  id?: string;
+  type?: string;
+
+  /** @format byte */
+  attributes?: string;
+}
+
 export interface VerifiablecredentialId {
   id?: string;
   type?: string;
@@ -139,6 +147,8 @@ export interface VerifiablecredentialLicenseCredentialSubject {
    */
   circulationLimit?: V1Beta1Coin;
 }
+
+export type VerifiablecredentialMsgIssueCredentialResponse = object;
 
 export type VerifiablecredentialMsgRevokeCredentialResponse = object;
 
@@ -261,6 +271,7 @@ export interface VerifiablecredentialVerifiableCredential {
    * selective disclosure.
    */
   userCred?: VerifiablecredentialUserCredentialSubject;
+  arbitraryCred?: VerifiablecredentialArbitraryCredentialSubject;
 
   /**
    * One or more cryptographic proofs that can be used to detect tampering

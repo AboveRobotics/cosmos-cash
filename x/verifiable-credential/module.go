@@ -1,6 +1,7 @@
 package verifiablecredential
 
 import ( // this line is used by starport scaffolding # 1
+	"context"
 	"encoding/json"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -68,6 +69,7 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncod
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the module.
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
+	_ = types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx))
 	// this line is used by starport scaffolding # 2
 }
 

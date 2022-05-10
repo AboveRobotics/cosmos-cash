@@ -288,6 +288,8 @@ func (vc VerifiableCredential) GetSubjectDID() didtypes.DID {
 		return didtypes.DID(subj.UserCred.Id)
 	case *VerifiableCredential_RegulatorCred:
 		return didtypes.DID(subj.RegulatorCred.Id)
+	case *VerifiableCredential_ArbitraryCred:
+		return didtypes.DID(subj.ArbitraryCred.Id)
 	default:
 		// TODO, not great
 		return didtypes.DID("")

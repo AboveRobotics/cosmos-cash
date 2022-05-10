@@ -231,4 +231,9 @@ export class MsgClientImpl {
         const promise = this.rpc.request("allinbits.cosmoscash.verifiablecredential.Msg", "RevokeCredential", data);
         return promise.then((data) => MsgRevokeCredentialResponse.decode(new Reader(data)));
     }
+    IssueCredential(request) {
+        const data = MsgIssueCredential.encode(request).finish();
+        const promise = this.rpc.request("allinbits.cosmoscash.verifiablecredential.Msg", "IssueCredential", data);
+        return promise.then((data) => MsgIssueCredentialResponse.decode(new Reader(data)));
+    }
 }

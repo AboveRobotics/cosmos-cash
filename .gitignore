@@ -48,3 +48,7 @@ build
 # generated docs
 /site
 /docs/assets/diagrams/out/
+
+# python test workspace
+_workspace/env
+_workspace/**.pyc

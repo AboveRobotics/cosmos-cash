@@ -4,19 +4,19 @@ import { StdFee } from "@cosmjs/launchpad";
 import { SigningStargateClient } from "@cosmjs/stargate";
 import { Registry, OfflineSigner, EncodeObject, DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
-import { MsgBurnToken } from "./types/issuer/tx";
 import { MsgMintToken } from "./types/issuer/tx";
 import { MsgPauseToken } from "./types/issuer/tx";
-import { MsgIssueUserCredential } from "./types/issuer/tx";
 import { MsgCreateIssuer } from "./types/issuer/tx";
+import { MsgBurnToken } from "./types/issuer/tx";
+import { MsgIssueUserCredential } from "./types/issuer/tx";
 
 
 const types = [
-  ["/allinbits.cosmoscash.issuer.MsgBurnToken", MsgBurnToken],
   ["/allinbits.cosmoscash.issuer.MsgMintToken", MsgMintToken],
   ["/allinbits.cosmoscash.issuer.MsgPauseToken", MsgPauseToken],
-  ["/allinbits.cosmoscash.issuer.MsgIssueUserCredential", MsgIssueUserCredential],
   ["/allinbits.cosmoscash.issuer.MsgCreateIssuer", MsgCreateIssuer],
+  ["/allinbits.cosmoscash.issuer.MsgBurnToken", MsgBurnToken],
+  ["/allinbits.cosmoscash.issuer.MsgIssueUserCredential", MsgIssueUserCredential],
   
 ];
 export const MissingWalletError = new Error("wallet is required");
@@ -49,11 +49,11 @@ const txClient = async (wallet: OfflineSigner, { addr: addr }: TxClientOptions =
 
   return {
     signAndBroadcast: (msgs: EncodeObject[], { fee, memo }: SignAndBroadcastOptions = {fee: defaultFee, memo: ""}) => client.signAndBroadcast(address, msgs, fee,memo),
-    msgBurnToken: (data: MsgBurnToken): EncodeObject => ({ typeUrl: "/allinbits.cosmoscash.issuer.MsgBurnToken", value: MsgBurnToken.fromPartial( data ) }),
     msgMintToken: (data: MsgMintToken): EncodeObject => ({ typeUrl: "/allinbits.cosmoscash.issuer.MsgMintToken", value: MsgMintToken.fromPartial( data ) }),
     msgPauseToken: (data: MsgPauseToken): EncodeObject => ({ typeUrl: "/allinbits.cosmoscash.issuer.MsgPauseToken", value: MsgPauseToken.fromPartial( data ) }),
-    msgIssueUserCredential: (data: MsgIssueUserCredential): EncodeObject => ({ typeUrl: "/allinbits.cosmoscash.issuer.MsgIssueUserCredential", value: MsgIssueUserCredential.fromPartial( data ) }),
     msgCreateIssuer: (data: MsgCreateIssuer): EncodeObject => ({ typeUrl: "/allinbits.cosmoscash.issuer.MsgCreateIssuer", value: MsgCreateIssuer.fromPartial( data ) }),
+    msgBurnToken: (data: MsgBurnToken): EncodeObject => ({ typeUrl: "/allinbits.cosmoscash.issuer.MsgBurnToken", value: MsgBurnToken.fromPartial( data ) }),
+    msgIssueUserCredential: (data: MsgIssueUserCredential): EncodeObject => ({ typeUrl: "/allinbits.cosmoscash.issuer.MsgIssueUserCredential", value: MsgIssueUserCredential.fromPartial( data ) }),
     
   };
 };
